@@ -30,7 +30,7 @@ def insert_hero_data(cursor, hero_id, hero_name, hero_attack_type, hero_roles):
 
 def insert_player_data(cursor, player_account_id, player_name, hero_id, hero_games, hero_wins):
     query_hero_name = f'SELECT HeroName FROM Heroes WHERE HeroID = {hero_id};'
-    hero_name = str(cursor.execute(query_hero_name))
+    hero_name = str(cursor.execute(query_hero_name).fetchone()).replace('(', '').replace(')', '').replace("'", '').replace(',', '')
     cursor.execute(
         f'''
         INSERT INTO Players 
