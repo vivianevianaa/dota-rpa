@@ -37,5 +37,5 @@ def persisting_player():
     except Exception as e2:
         print(e2)
 
-
+persisting_heroes()
 persisting_player()
