@@ -1,42 +1,36 @@
-from src.utils import constants as const
-from src.database.operations import db_connection, insert_player_data
 import requests
 
 
-headers = {
-    "api_key": f"{const.APY_KEY}"
-}
+def api_request_player(account_id, headers):
+    players_url = f"https://api.opendota.com/api/players/{account_id}"
 
-account_id = input("Enter with the account id: ")
+    response_player = requests.request("GET", players_url, headers=headers)
+    player = response_player.json()
 
-players_url = f"https://api.opendota.com/api/players/{account_id}"
-
-response_player = requests.request("GET", players_url, headers=headers)
-player = response_player.json()
-
-cursor = db_connection()
-
-player_account_id = player['profile']['account_id']
-player_personaname = player['profile']['personaname']
-
-print(f'{player_account_id} - {player_personaname}')
-
-########################## HEROES ##########################
-
-player_hero_url = f"https://api.opendota.com/api/players/{account_id}/heroes"
-
-response_player_heroes = requests.request("GET", player_hero_url, headers=headers)
-player_heroes = response_player_heroes.json()
-
-for hero in player_heroes:
-    if hero.get('games') > 0:
-        hero_id = hero.get('hero_id')
-        games = hero.get('games')
-        win = hero.get('win')
+    return player
 
 
+def player_filter(player):
+    player_account_id = player['profile']['account_id']
+    player_name = player['profile']['personaname']
 
-        print(f'Hero_id: {hero_id} - Games: {games} - Wins: {win}')
+    return str(player_account_id), str(player_name)
 
+
+def api_request_player_heroes(account_id, headers):
+    player_hero_url = f"https://api.opendota.com/api/players/{account_id}/heroes"
+
+    response_player_heroes = requests.request("GET", player_hero_url, headers=headers)
+    player_heroes = response_player_heroes.json()
+
+    return player_heroes
+
+
+def player_hero_filter(player_hero):
+    hero_id = player_hero.get('hero_id')
+    games = player_hero.get('games')
+    win = player_hero.get('win')
+
+    return hero_id, games, win
 
 

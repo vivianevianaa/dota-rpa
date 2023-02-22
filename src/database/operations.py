@@ -18,9 +18,6 @@ def db_connection():
     return connection.cursor()
 
 
-cursor = db_connection()
-
-
 def insert_hero_data(cursor, hero_id, hero_name, hero_attack_type, hero_roles):
     cursor.execute(
         f'''
@@ -29,17 +26,15 @@ def insert_hero_data(cursor, hero_id, hero_name, hero_attack_type, hero_roles):
         VALUES
             ({hero_id}, '{hero_name}', '{hero_attack_type}', '{hero_roles}');
         ''')
-    cursor.commit()
-
-######################## PLAYERS ########################
 
 
-def insert_player_data(cursor, player_account_id, player_personaname, hero_id, hero_games, hero_wins):
-    hero_name = f'SELECT HeroName FROM Heroes WHERE HeroID = {hero_id};'
+def insert_player_data(cursor, player_account_id, player_name, hero_id, hero_games, hero_wins):
+    query_hero_name = f'SELECT HeroName FROM Heroes WHERE HeroID = {hero_id};'
+    hero_name = str(cursor.execute(query_hero_name))
     cursor.execute(
         f'''
         INSERT INTO Players 
             (PlayerAccountID, PlayerName, FK_HeroID, HeroName, HeroGames, HeroWins) 
         VALUES 
-            ({player_account_id}, {player_personaname}, {hero_id}, '{hero_name}', '{hero_games}', '{hero_wins}');
+            ({player_account_id}, '{player_name}', {hero_id}, '{hero_name}', {hero_games}, {hero_wins});
         ''')
